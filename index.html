@@ -13,31 +13,50 @@
 </head>
 <body>
     <script>
-        // Create a scene
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+       // Create a scene
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-        // Load the 3D model
-        const loader = new THREE.GLTFLoader();
-    loader.load('https://awomar01.github.io/Biology_STEM_Alex/digestive_system.glb', function(gltf) {
-    scene.add(gltf.scene);
-    gltf.scene.position.set(0, 0, 0); // Center model
-    gltf.scene.scale.set(1, 1, 1);   // Adjust scale if needed
-}, undefined, function(error) {
-    console.error('Error loading model:', error);
-});
+// Add a light source
+const light = new THREE.AmbientLight(0xffffff, 1); // Soft white light
+scene.add(light);
 
-        camera.position.z = 5;
+// Load the 3D model
+const loader = new THREE.GLTFLoader();
+loader.load(
+    'digestive_system.glb',
+    function (gltf) {
+        const model = gltf.scene;
+        scene.add(model);
 
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            renderer.render(scene, camera);
-        }
-        animate();
+        // Center the model
+        model.position.set(0, -1, 0);
+        model.scale.set(1, 1, 1);
+
+        // Adjust camera
+        camera.position.set(0, 1, 3);
+        camera.lookAt(model.position);
+
+        console.log("Model loaded successfully!");
+    },
+    function (xhr) {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+    },
+    function (error) {
+        console.error('Error loading model:', error);
+    }
+);
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+animate();
+
     </script>
 </body>
 </html>
