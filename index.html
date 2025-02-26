@@ -22,7 +22,7 @@
 
         // Load the 3D model
         const loader = new THREE.GLTFLoader();
-        loader.load('digestive_system.glb', function(gltf) {
+       loader.load('https://awomar01.github.io/Biology_STEM_Alex/digestive_system.glb', function(gltf) {
             scene.add(gltf.scene);
         }, undefined, function(error) {
             console.error('Error loading model:', error);
