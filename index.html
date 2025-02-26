@@ -13,51 +13,44 @@
 </head>
 <body>
     <script>
-       // Create a scene
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+        // Create a scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-// Add a light source
-const light = new THREE.AmbientLight(0xffffff, 1); // Soft white light
-scene.add(light);
+        // Add a light source
+        const light = new THREE.AmbientLight(0xffffff, 1); // Soft white light
+        scene.add(light);
 
-// Load the 3D model
-const loader = new THREE.GLTFLoader();
-loader.load('digestive_system.glb', function (gltf) {
-    let model = gltf.scene;
-    model.scale.set(0.05, 0.05, 0.05); // Scale down to 10% of original size
-    scene.add(model);
-});
+        // Load the 3D model
+        const loader = new THREE.GLTFLoader();
+        loader.load('digestive_system.glb', function (gltf) {
+            let model = gltf.scene;
+            model.scale.set(0.05, 0.05, 0.05); // Scale down model
+            model.position.set(0, -1, 0); // Move model down
 
-        // Center the model
-        model.position.set(0, -1, 0);
-        model.scale.set(1, 1, 1);
+            scene.add(model);
+            console.log("Model loaded successfully!");
+        }, 
+        function (xhr) {
+            console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+        },
+        function (error) {
+            console.error('Error loading model:', error);
+        });
 
         // Adjust camera
-       camera.position.set(0, 3, 10); // Moves the camera back and slightly up
-camera.lookAt(0, 0, 0); // Points the camera at the model
+        camera.position.set(0, 3, 10); // Move camera back and slightly up
+        camera.lookAt(0, 0, 0); // Point camera at model
 
-
-        console.log("Model loaded successfully!");
-    },
-    function (xhr) {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-    },
-    function (error) {
-        console.error('Error loading model:', error);
-    }
-);
-
-// Animation loop
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-}
-animate();
-
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
     </script>
 </body>
 </html>
