@@ -1,58 +1,77 @@
-<!-- Load Three.js first -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<!-- Load OrbitControls -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<!-- Load GLTFLoader -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biology 3D Models</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: black; }
+        canvas { display: block; }
+        .nav-buttons {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .nav-buttons button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-buttons">
+        <button onclick="window.location.href='index.html'">Digestive System</button>
+        <button onclick="window.location.href='excretory.html'">Excretory System</button>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Create a scene
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+            const light = new THREE.AmbientLight(0xffffff, 1);
+            scene.add(light);
 
-    // Add lighting
-    const light = new THREE.AmbientLight(0xffffff, 1);
-    scene.add(light);
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 2;
+            controls.maxDistance = 20;
 
-    // Add OrbitControls for interaction
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.minDistance = 2;  // Minimum zoom distance
-    controls.maxDistance = 20; // Maximum zoom distance
+            const loader = new THREE.GLTFLoader();
+            loader.load('digestive_system.glb', function (gltf) {
+                let model = gltf.scene;
+                model.scale.set(0.1, 0.1, 0.1);
+                model.position.set(0, -12, 0);
+                scene.add(model);
+                console.log("Model loaded successfully!");
+            },
+            function (xhr) {
+                console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+            },
+            function (error) {
+                console.error('Error loading model:', error);
+            });
 
-    // Load the 3D model
-    const loader = new THREE.GLTFLoader();
-    loader.load('digestive_system.glb', function (gltf) {
-        let model = gltf.scene;
-        model.scale.set(0.1, 0.1, 0.1);
-        model.position.set(0, -12, 0);
-        scene.add(model);
+            camera.position.set(0, 3, 10);
+            camera.lookAt(0, 0, 0);
 
-        console.log("Model loaded successfully!");
-    },
-    function (xhr) {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-    },
-    function (error) {
-        console.error('Error loading model:', error);
-    });
-
-    // Adjust camera
-    camera.position.set(0, 3, 10);
-    camera.lookAt(0, 0, 0);
-
-    // Animation loop
-    function animate() {
-        requestAnimationFrame(animate);
-        controls.update(); // Update camera controls
-        renderer.render(scene, camera);
-    }
-    animate();
-  });
-</script>
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+        });
+    </script>
+</body>
+</html>
